@@ -1,51 +1,62 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import FooterLeft from './FooterLeft';
 import FooterRight from './FooterRight';
 import './VideoCard.css';
 
-const VideoCard = (props) => {
-  const { url, username, description, song, likes, shares, comments, saves, profilePic, setVideoRef, autoplay } = props;
+function VideoCard({ url, username, description, song, likes, shares, comments, saves, profilePic, setVideoRef, autoplay }) {
+  const [playing, setPlaying] = useState(autoplay);
   const videoRef = useRef(null);
 
   useEffect(() => {
-    if (autoplay) {
-      videoRef.current.play();
+    if (videoRef.current) {
+      setVideoRef(videoRef.current);
     }
-  }, [autoplay]);
+  }, [setVideoRef]);
 
   const onVideoPress = () => {
-    if (videoRef.current.paused) {
-      videoRef.current.play();
+    if (!videoRef.current) return;
+    
+    if (playing) {
+      const pausePromise = videoRef.current.pause();
+      if (pausePromise !== undefined) {
+        pausePromise.catch(error => {
+          console.error('Error pausing video:', error);
+        });
+      }
+      setPlaying(false);
     } else {
-      videoRef.current.pause();
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.error('Error playing video:', error);
+        });
+      }
+      setPlaying(true);
     }
   };
 
   return (
     <div className="video">
-      {/* The video element */}
       <video
-        className="player"
+        ref={videoRef}
         onClick={onVideoPress}
-        ref={(ref) => {
-          videoRef.current = ref;
-          setVideoRef(ref);
-        }}
+        className="player"
         loop
+        playsInline
+        preload="metadata"
+        poster={url.replace(/\.[^/.]+$/, "_thumb.jpg")} // Add thumbnail support
         src={url}
-      ></video>
+      />
       <div className="bottom-controls">
         <div className="footer-left">
-          {/* The left part of the container */}
           <FooterLeft username={username} description={description} song={song} />
         </div>
         <div className="footer-right">
-          {/* The right part of the container */}
           <FooterRight likes={likes} shares={shares} comments={comments} saves={saves} profilePic={profilePic} />
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default VideoCard;
