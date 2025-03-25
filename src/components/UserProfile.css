@@ -161,11 +161,14 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  background: #000;
 }
 
 .video-feed .player {
-  max-height: 100%;
-  width: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 45px);
   object-fit: contain;
 }
 

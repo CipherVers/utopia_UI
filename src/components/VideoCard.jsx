@@ -21,13 +21,26 @@ function VideoCard({
   onUserClick 
 }) {
   const [playing, setPlaying] = useState(autoplay);
+  const [isPortrait, setIsPortrait] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
     if (videoRef.current) {
       setVideoRef(videoRef.current);
+
+      // Create a temporary video element to get dimensions
+      const tempVideo = document.createElement('video');
+      tempVideo.src = url;
+      
+      tempVideo.onloadedmetadata = () => {
+        const { videoWidth, videoHeight } = tempVideo;
+        setIsPortrait(videoHeight > videoWidth);
+        // Clean up temporary video
+        tempVideo.src = '';
+        tempVideo.remove();
+      };
     }
-  }, [setVideoRef]);
+  }, [setVideoRef, url]);
 
   const onVideoPress = () => {
     if (!videoRef.current) return;
@@ -56,7 +69,7 @@ function VideoCard({
       <video
         ref={videoRef}
         onClick={onVideoPress}
-        className="player"
+        className={`player ${isPortrait ? 'portrait' : 'landscape'}`}
         loop
         playsInline
         preload="metadata"
