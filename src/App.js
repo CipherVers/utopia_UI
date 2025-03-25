@@ -65,43 +65,75 @@ function App() {
       const formData = new URLSearchParams();
       formData.append('username', username);
       formData.append('password', password);
+      formData.append('grant_type', 'password'); // Add this line
 
       const response = await fetch('https://oback.dacryptogame.com/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json'
         },
         body: formData
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
+      console.log('Login response:', data); // Debug log
+
+      if (response.ok && data.access_token) {
         setToken(data.access_token);
         setIsAuthenticated(true);
         setLoginError('');
+        localStorage.setItem('token', data.access_token); // Save token
       } else {
-        setLoginError('Invalid credentials');
+        setLoginError(data.detail || 'Invalid credentials');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setLoginError('Login failed. Please try again.');
     }
   };
 
   const fetchRankedVideos = async () => {
     try {
+      if (!token) {
+        console.error('No token available');
+        return;
+      }
+
       const response = await fetch('https://oback.dacryptogame.com/api/videos/ranked', {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
         }
       });
+
+      const data = await response.json();
+      console.log('Videos response:', data); // Debug log
+
       if (response.ok) {
-        const data = await response.json();
-        setVideos(data);
+        setVideos(Array.isArray(data) ? data : []);
+      } else {
+        console.error('Failed to fetch videos:', data);
+        if (response.status === 401) {
+          // Token expired or invalid
+          setIsAuthenticated(false);
+          localStorage.removeItem('token');
+        }
       }
     } catch (error) {
       console.error('Failed to fetch videos:', error);
     }
   };
+
+  // Add token persistence
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -153,7 +185,14 @@ function App() {
         <LoginForm onLogin={handleLogin} error={loginError} />
       ) : (
         <div className="container">
-          <TopNavbar className="top-navbar" />
+          <TopNavbar 
+            className="top-navbar" 
+            onLogout={() => {
+              setIsAuthenticated(false);
+              setToken('');
+              localStorage.removeItem('token');
+            }} 
+          />
           {videos.map((video, index) => (
             <VideoCard
               key={index}
