@@ -47,10 +47,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onLike, onSav
   return (
     <div className="footer-right">
       <div className="sidebar-icon" onClick={onProfileClick} style={{ cursor: 'pointer' }}>
-        {profilePic ? (
-          // Displaying the user profile picture
-          <img src={profilePic} className='userprofile' alt='Profile' style={{ width: '45px', height: '45px', color: '#616161' }} />
-        ) : null}
+        <img src="https://i.pinimg.com/originals/25/78/61/25786134576ce0344893b33a051160b1.jpg" className='userprofile' alt='Profile' style={{ width: '45px', height: '45px', color: '#616161' }} />
         {/* The user add icon */}
         <FontAwesomeIcon icon={userAddIcon} className='useradd' style={{ width: '15px', height: '15px', color: '#FF0000' }} onClick={handleUserAddClick}/>
       </div>
