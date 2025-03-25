@@ -125,3 +125,52 @@ html {
   padding: 5px;
   border-radius: 50%;
 }
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #000;
+}
+
+.login-form {
+  background-color: #121212;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  color: white;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #1f1f1f;
+  color: white;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #fe2c55;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.error-message {
+  color: #fe2c55;
+  text-align: center;
+  margin-bottom: 1rem;
+}

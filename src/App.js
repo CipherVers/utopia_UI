@@ -3,6 +3,7 @@ import './App.css';
 import VideoCard from './components/VideoCard';
 import BottomNavbar from './components/BottomNavbar';
 import TopNavbar from './components/TopNavbar';
+import LoginForm from './components/LoginForm';
 
 // This array holds information about different videos
 const videoUrls = [
@@ -54,11 +55,59 @@ const videoUrls = [
 
 function App() {
   const [videos, setVideos] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState('');
+  const [loginError, setLoginError] = useState('');
   const videoRefs = useRef([]);
 
+  const handleLogin = async (username, password) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', password);
+
+      const response = await fetch('https://oback.dacryptogame.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setToken(data.access_token);
+        setIsAuthenticated(true);
+        setLoginError('');
+      } else {
+        setLoginError('Invalid credentials');
+      }
+    } catch (error) {
+      setLoginError('Login failed. Please try again.');
+    }
+  };
+
+  const fetchRankedVideos = async () => {
+    try {
+      const response = await fetch('https://oback.dacryptogame.com/api/videos/ranked', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setVideos(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch videos:', error);
+    }
+  };
+
   useEffect(() => {
-    setVideos(videoUrls);
-  }, []);
+    if (isAuthenticated) {
+      fetchRankedVideos();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const observerOptions = {
@@ -100,30 +149,28 @@ function App() {
 
   return (
     <div className="app">
-      <div className="container">
-        <TopNavbar className="top-navbar" />
-        {/* Here we map over the videos array and create VideoCard components */}
-        {videos.map((video, index) => (
-          <VideoCard
-            key={index}
-            username={video.username}
-            description={video.description}
-            song={video.song}
-            likes={video.likes}
-            saves={video.saves}
-            comments={video.comments}
-            shares={video.shares}
-            url={video.url}
-            profilePic={video.profilePic}
-            setVideoRef={handleVideoRef(index)}
-            autoplay={index === 0}
-          />
-        ))}
-        <BottomNavbar className="bottom-navbar" />
-      </div>
+      {!isAuthenticated ? (
+        <LoginForm onLogin={handleLogin} error={loginError} />
+      ) : (
+        <div className="container">
+          <TopNavbar className="top-navbar" />
+          {videos.map((video, index) => (
+            <VideoCard
+              key={index}
+              username={video.user}
+              description={video.title}
+              likes={video.likes}
+              saves={video.saves}
+              url={video.url}
+              setVideoRef={handleVideoRef(index)}
+              autoplay={index === 0}
+            />
+          ))}
+          <BottomNavbar className="bottom-navbar" />
+        </div>
+      )}
     </div>
   );
-  
 }
 
 export default App;
