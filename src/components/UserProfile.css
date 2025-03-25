@@ -1,0 +1,143 @@
+.user-profile {
+  background-color: #000;
+  min-height: 100vh;
+  padding: 20px;
+  color: white;
+}
+
+.profile-header {
+  padding: 20px 0;
+  text-align: center;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.video-thumbnail {
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.video-thumbnail:hover {
+  transform: scale(1.02);
+}
+
+.video-thumbnail:hover .thumbnail-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.thumbnail-image {
+  aspect-ratio: 16/9;
+  position: relative;
+  background-color: #2f2f2f;
+}
+
+.thumbnail-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.video-info {
+  padding: 8px;
+}
+
+.video-title {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.video-stats {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #999;
+}
+
+.loading, .error, .no-videos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 20px;
+  color: #fff;
+}
+
+.error {
+  color: #ff4444;
+}
+
+.video-feed-container {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  max-width: 375px;
+  margin: 0 auto;
+  background: #000;
+  overflow: hidden;
+}
+
+.back-to-grid {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.video-feed {
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+
+.video-feed > div {
+  scroll-snap-align: start;
+  height: 100vh;
+}
+
+.video-feed::-webkit-scrollbar {
+  display: none;
+}

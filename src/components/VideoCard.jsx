@@ -17,7 +17,8 @@ function VideoCard({
   setVideoRef, 
   autoplay,
   onLike,
-  onSave 
+  onSave,
+  onUserClick 
 }) {
   const [playing, setPlaying] = useState(autoplay);
   const videoRef = useRef(null);
@@ -64,7 +65,12 @@ function VideoCard({
       />
       <div className="bottom-controls">
         <div className="footer-left">
-          <FooterLeft username={username} description={description} song={song} />
+          <FooterLeft 
+            username={username} 
+            description={description} 
+            song={song}
+            onUserClick={() => onUserClick(username)}
+          />
         </div>
         <div className="footer-right">
           <FooterRight 
@@ -75,6 +81,7 @@ function VideoCard({
             profilePic={profilePic}
             onLike={() => onLike(videoId)}
             onSave={() => onSave(videoId)}
+            onProfileClick={() => onUserClick(username)}
           />
         </div>
       </div>

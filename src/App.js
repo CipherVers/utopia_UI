@@ -4,6 +4,7 @@ import VideoCard from './components/VideoCard';
 import BottomNavbar from './components/BottomNavbar';
 import TopNavbar from './components/TopNavbar';
 import LoginForm from './components/LoginForm';
+import UserProfile from './components/UserProfile';  // Add this import
 
 function App() {
   const [videos, setVideos] = useState([]);
@@ -14,6 +15,8 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentView, setCurrentView] = useState('feed');
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const handleLogin = async (username, password) => {
     try {
@@ -219,11 +222,16 @@ function App() {
     }
   };
 
+  const handleUserClick = (username) => {
+    setSelectedUser(username);
+    setCurrentView('profile');
+  };
+
   return (
     <div className="app">
       {!isAuthenticated ? (
         <LoginForm onLogin={handleLogin} error={loginError} />
-      ) : (
+      ) : currentView === 'feed' ? (
         <div className="container">
           <TopNavbar 
             className="top-navbar" 
@@ -231,7 +239,7 @@ function App() {
               setIsAuthenticated(false);
               setToken('');
               localStorage.removeItem('token');
-            }} 
+            }}
           />
           {videos.map((video, index) => (
             <VideoCard
@@ -246,10 +254,18 @@ function App() {
               autoplay={index === 0}
               onLike={handleLike}
               onSave={handleSave}
+              onUserClick={handleUserClick}
+              profilePic={video.profilePic}
             />
           ))}
           <BottomNavbar className="bottom-navbar" />
         </div>
+      ) : (
+        <UserProfile 
+          token={token}
+          username={selectedUser}
+          onBack={() => setCurrentView('feed')}
+        />
       )}
     </div>
   );

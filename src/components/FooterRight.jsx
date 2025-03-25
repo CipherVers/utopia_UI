@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faCircleCheck, faHeart, faCommentDots, faBookmark, faShare } from '@fortawesome/free-solid-svg-icons';
 import './FooterRight.css';
 
-function FooterRight({ likes, comments, saves, shares, profilePic, onLike, onSave }) {
+function FooterRight({ likes, comments, saves, shares, profilePic, onLike, onSave, onProfileClick }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
@@ -46,7 +46,7 @@ function FooterRight({ likes, comments, saves, shares, profilePic, onLike, onSav
 
   return (
     <div className="footer-right">
-      <div className="sidebar-icon">
+      <div className="sidebar-icon" onClick={onProfileClick} style={{ cursor: 'pointer' }}>
         {profilePic ? (
           // Displaying the user profile picture
           <img src={profilePic} className='userprofile' alt='Profile' style={{ width: '45px', height: '45px', color: '#616161' }} />
