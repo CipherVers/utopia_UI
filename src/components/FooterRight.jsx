@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faCircleCheck, faHeart, faCommentDots, faBookmark, faShare } from '@fortawesome/free-solid-svg-icons';
 import './FooterRight.css';
 
-function FooterRight({ likes, comments, saves, shares, profilePic }) {
+function FooterRight({ likes, comments, saves, shares, profilePic, onLike, onSave }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [userAddIcon, setUserAddIcon] = useState(faCirclePlus);
@@ -36,6 +36,12 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
 
   const handleLikeClick = () => {
     setLiked((prevLiked) => !prevLiked);
+    onLike();
+  };
+
+  const handleSaveClick = () => {
+    setSaved((prevSaved) => !prevSaved);
+    onSave();
   };
 
   return (
@@ -48,12 +54,11 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
         {/* The user add icon */}
         <FontAwesomeIcon icon={userAddIcon} className='useradd' style={{ width: '15px', height: '15px', color: '#FF0000' }} onClick={handleUserAddClick}/>
       </div>
-      <div className="sidebar-icon">
+      <div className="sidebar-icon" onClick={handleLikeClick}>
         {/* The heart icon for liking */}
         <FontAwesomeIcon
           icon={faHeart}
           style={{ width: '35px', height: '35px', color: liked ? '#FF0000' : 'white' }}
-          onClick={handleLikeClick}
         />
         {/* Displaying the formatted likes count */}
         <p>{formatLikesCount(parseLikesCount(likes) + (liked ? 1 : 0))}</p>
@@ -64,20 +69,18 @@ function FooterRight({ likes, comments, saves, shares, profilePic }) {
         {/* Displaying the number of comments */}
         <p>{comments}</p>
       </div>
-      <div className="sidebar-icon">
+      <div className="sidebar-icon" onClick={handleSaveClick}>
         {saved ? (
           // Displaying the bookmark icon when saved
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ width: '35px', height: '35px', color: '#ffc107' }}
-            onClick={() => setSaved(false)}
           />
         ) : (
           // Displaying the bookmark icon when not saved
           <FontAwesomeIcon
             icon={faBookmark}
             style={{ width: '35px', height: '35px', color: 'white' }}
-            onClick={() => setSaved(true)}
           />
         )}
         {/* Displaying the number of saves */}

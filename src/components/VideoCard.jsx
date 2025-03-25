@@ -3,7 +3,22 @@ import FooterLeft from './FooterLeft';
 import FooterRight from './FooterRight';
 import './VideoCard.css';
 
-function VideoCard({ url, username, description, song, likes, shares, comments, saves, profilePic, setVideoRef, autoplay }) {
+function VideoCard({ 
+  url, 
+  videoId,
+  username, 
+  description, 
+  song, 
+  likes, 
+  shares, 
+  comments, 
+  saves, 
+  profilePic, 
+  setVideoRef, 
+  autoplay,
+  onLike,
+  onSave 
+}) {
   const [playing, setPlaying] = useState(autoplay);
   const videoRef = useRef(null);
 
@@ -52,7 +67,15 @@ function VideoCard({ url, username, description, song, likes, shares, comments, 
           <FooterLeft username={username} description={description} song={song} />
         </div>
         <div className="footer-right">
-          <FooterRight likes={likes} shares={shares} comments={comments} saves={saves} profilePic={profilePic} />
+          <FooterRight 
+            likes={likes} 
+            shares={shares} 
+            comments={comments} 
+            saves={saves} 
+            profilePic={profilePic}
+            onLike={() => onLike(videoId)}
+            onSave={() => onSave(videoId)}
+          />
         </div>
       </div>
     </div>

@@ -171,6 +171,54 @@ function App() {
     videoRefs.current[index] = ref;
   };
 
+  const handleLike = async (videoId) => {
+    try {
+      const response = await fetch(`https://oback.dacryptogame.com/api/videos/${videoId}/like`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setVideos(prevVideos =>
+          prevVideos.map(video =>
+            video.id === videoId
+              ? { ...video, likes: video.likes + 1 }
+              : video
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Failed to like video:', error);
+    }
+  };
+
+  const handleSave = async (videoId) => {
+    try {
+      const response = await fetch(`https://oback.dacryptogame.com/api/videos/${videoId}/save`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setVideos(prevVideos =>
+          prevVideos.map(video =>
+            video.id === videoId
+              ? { ...video, saves: video.saves + 1 }
+              : video
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Failed to save video:', error);
+    }
+  };
+
   return (
     <div className="app">
       {!isAuthenticated ? (
@@ -188,6 +236,7 @@ function App() {
           {videos.map((video, index) => (
             <VideoCard
               key={video.id || index}
+              videoId={video.id}
               username={video.user}
               description={video.title}
               likes={video.likes || 0}
@@ -195,6 +244,8 @@ function App() {
               url={video.url}
               setVideoRef={handleVideoRef(index)}
               autoplay={index === 0}
+              onLike={handleLike}
+              onSave={handleSave}
             />
           ))}
           <BottomNavbar className="bottom-navbar" />
